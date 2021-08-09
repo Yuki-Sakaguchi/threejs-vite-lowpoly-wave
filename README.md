@@ -1,7 +1,13 @@
 # Three.jsでローポリの波みたいなものを作る
 
-- Three.js
+- [Three.js](https://threejs.org/)
 - [Vite](https://vitejs.dev/)
+
+# DEMO
+- part01
+  - https://yuki-sakaguchi.github.io/threejs-vite-lowpoly-wave/part01/dist/
+- part02
+  - https://yuki-sakaguchi.github.io/threejs-vite-lowpoly-wave/part02/dist/
 
 # 参考
 https://www.youtube.com/watch?v=YK1Sw_hnm58
