@@ -1,5 +1,7 @@
 # Three.jsでローポリの波みたいなものを作る
 
+![result](https://user-images.githubusercontent.com/16290220/128708316-35353076-2a09-4051-b70f-7c3ddde2cd77.gif)
+
 - [Three.js](https://threejs.org/)
 - [Vite](https://vitejs.dev/)
 
