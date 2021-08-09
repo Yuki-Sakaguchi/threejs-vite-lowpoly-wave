@@ -7,8 +7,11 @@
 
 # DEMO
 - part01
+  - 動画通りにやってみたやつ
   - https://yuki-sakaguchi.github.io/threejs-vite-lowpoly-wave/part01/dist/
 - part02
+  - リサイズに対応
+  - スクロールに対応したアニメーションを対応
   - https://yuki-sakaguchi.github.io/threejs-vite-lowpoly-wave/part02/dist/
 
 # 参考
@@ -78,3 +81,9 @@ if (intersects.length > 0) {
   // アニメーションさせる
 }
 ```
+
+## スクロールなどのHTMLと連動させる時に気をつけること
+
+ちゃんと数値に応じて場所を決める計算にしたほうが良い  
+単純に値を増加、現象させちゃうとレスポンシブやDOMの変更に弱くなるので、元々の値と目指していく値を決めてちゃんと計算で決める  
+そうすればリサイズしてもいい感じに場所が決まる
