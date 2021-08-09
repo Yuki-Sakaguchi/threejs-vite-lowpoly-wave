@@ -1,7 +1,23 @@
 import * as THREE from 'https://unpkg.com/three@0.126.1/build/three.module.js';
-import { OrbitControls } from 'https://unpkg.com/three@0.126.1/examples/jsm/controls/OrbitControls.js';
 import * as dat from 'dat.gui';
 import gsap from 'gsap';
+
+const mouse = {
+  x: undefined,
+  y: undefined,
+};
+
+let maxScrollSize = 0;
+const baseCameraPosition = {
+  x: 0,
+  y: 0,
+  z: 50
+}
+const baseCameraRotation = {
+  x: 0,
+  y: 0,
+  z: 0,
+};
 
 // ジオメトリーの頂点の位置をループし、z軸だけランダムで変更することでz軸にガタガタしたオブジェクトを作る
 // 配列には3つごとにx,y,zの値が入っているので3つごとの塊で取得して扱っている
@@ -50,24 +66,21 @@ gui.add(world.plane, 'width', 1, 500).onChange(generatePlane);
 gui.add(world.plane, 'height', 1, 500).onChange(generatePlane);
 gui.add(world.plane, 'widthSegments', 1, 100).onChange(generatePlane);
 gui.add(world.plane, 'heightSegments', 1, 100).onChange(generatePlane);
-
-const mouse = {
-  x: undefined,
-  y: undefined,
-};
+gui.close();
 
 const raycaster = new THREE.Raycaster();
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 50;
+camera.position.z = baseCameraPosition.z;
+camera.rotation.x = baseCameraRotation.x;
 
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({
+  alpha: true,
+});
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 document.body.appendChild(renderer.domElement);
-
-new OrbitControls(camera, renderer.domElement);
 
 const planeGeometry = new THREE.PlaneGeometry(world.plane.width, world.plane.height, world.plane.widthSegments, world.plane.heightSegments);
 const planeMaterial = new THREE.MeshPhongMaterial({ side: THREE.DoubleSide, flatShading: THREE.FlatShading, vertexColors: true });
@@ -147,9 +160,49 @@ function animate() {
 
 animate();
 
-
 window.addEventListener('mousemove', (event) => {
   // 真ん中を0にするための値を丸める
   mouse.x = (event.clientX / innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / innerHeight) * 2 + 1;
+});
+
+// リサイズ処理
+let timeoutId = 0;
+const canvasSize = {
+  w: window.innerWidth,
+  h: window.innerHeight,
+};
+const resize = () => {
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+
+  canvasSize.w = width;
+  canvasSize.h = height;
+
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(width, height);
+
+  camera.aspect = width / height;
+  camera.updateProjectionMatrix();
+
+  maxScrollSize = document.body.clientHeight - window.innerHeight;
+};
+
+window.addEventListener('load', () => {
+  maxScrollSize = document.body.clientHeight - window.innerHeight;
+});
+
+// リサイズ処理
+window.addEventListener('resize', () => {
+  if (timeoutId) clearTimeout(timeoutId);
+  timeoutId = setTimeout(resize, 200);
+});
+
+window.addEventListener('scroll', (event) => {
+  camera.position.setY(window.pageYOffset * 0.1);
+  camera.position.setZ(Math.max(2, baseCameraPosition.z - (window.pageYOffset * 0.134)));
+
+  camera.rotation.x = Math.min(1.5, window.pageYOffset * 0.004);
+
+  console.log(camera.rotation.x);
 });
